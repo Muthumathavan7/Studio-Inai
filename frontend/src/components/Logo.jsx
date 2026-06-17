@@ -1,25 +1,28 @@
 import React from "react";
 
+const LOGO_URL =
+  "https://customer-assets.emergentagent.com/job_architect-pro-10/artifacts/8iptcf6v_Screenshot%202026-06-17%20at%206.27.40%E2%80%AFPM.png";
+
 export const Logo = ({ className = "", dark = false, size = "md" }) => {
   const sizes = {
-    sm: "text-base",
-    md: "text-lg",
-    lg: "text-2xl",
+    sm: { box: "w-9 h-9", text: "text-sm", tag: "0.55rem" },
+    md: { box: "w-11 h-11", text: "text-base", tag: "0.55rem" },
+    lg: { box: "w-14 h-14", text: "text-lg", tag: "0.6rem" },
   };
+  const s = sizes[size] || sizes.md;
   const color = dark ? "text-stone-50" : "text-stone-900";
+  const subColor = dark ? "text-stone-400" : "text-stone-500";
+
   return (
-    <div
-      className={`flex items-center gap-2.5 ${className}`}
-      data-testid="brand-logo"
-    >
-      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="2" y="2" width="28" height="28" stroke="currentColor" strokeWidth="1.4" className={color} />
-        <path d="M2 22 L16 8 L30 22" stroke="currentColor" strokeWidth="1.4" fill="none" className={color} />
-        <circle cx="16" cy="22" r="1.4" fill="currentColor" className={color} />
-      </svg>
+    <div className={`flex items-center gap-3 ${className}`} data-testid="brand-logo">
+      <div className={`${s.box} rounded-full overflow-hidden bg-stone-900 shrink-0 ring-1 ring-stone-200/40`}>
+        <img src={LOGO_URL} alt="Studio Inai" className="w-full h-full object-cover" />
+      </div>
       <div className={`leading-none ${color}`}>
-        <div className={`font-serif ${sizes[size]} tracking-wide`}>STUDIO INAI</div>
-        <div className="overline mt-0.5 opacity-70" style={{ fontSize: "0.55rem" }}>
+        <div className={`font-serif ${s.text} tracking-tight`} style={{ fontVariationSettings: '"opsz" 96' }}>
+          studio inai
+        </div>
+        <div className={`overline mt-1 ${subColor}`} style={{ fontSize: s.tag, letterSpacing: "0.28em" }}>
           ARCHITECTURE · INTERIORS
         </div>
       </div>

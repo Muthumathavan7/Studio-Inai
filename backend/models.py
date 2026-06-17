@@ -32,7 +32,7 @@ class SiteContent(BaseModel):
     hero_overline: str = "Studio Inai"
     hero_title: str = "Architecture as a quiet, lasting gesture."
     hero_subtitle: str = "Architecture · Urban Design · Planning · Interior"
-    hero_image: str = "https://images.pexels.com/photos/3137050/pexels-photo-3137050.jpeg"
+    hero_image: str = "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=2400&q=85&auto=format&fit=crop"
     hero_cta_label: str = "Book a Consultation"
     # About
     about_overline: str = "Our Story"

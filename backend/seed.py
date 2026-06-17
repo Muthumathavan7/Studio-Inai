@@ -30,6 +30,14 @@ async def seed_site_content(db):
         content = SiteContent().model_dump()
         content["_id"] = content.pop("id")
         await db.site_content.insert_one(content)
+    else:
+        # One-time migration: refresh hero_image if it's still the original pexels seed URL
+        old_url = "https://images.pexels.com/photos/3137050/pexels-photo-3137050.jpeg"
+        new_url = "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=2400&q=85&auto=format&fit=crop"
+        await db.site_content.update_one(
+            {"_id": "site_content", "hero_image": old_url},
+            {"$set": {"hero_image": new_url}},
+        )
 
 
 async def seed_availability(db):

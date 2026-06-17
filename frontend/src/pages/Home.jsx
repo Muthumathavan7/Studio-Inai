@@ -19,31 +19,33 @@ export default function Home() {
   return (
     <div data-testid="home-page">
       {/* HERO */}
-      <section className="relative min-h-[100vh] flex items-end" data-testid="hero-section">
+      <section className="relative min-h-[100vh] flex items-end overflow-hidden bg-stone-900" data-testid="hero-section">
         <div className="absolute inset-0">
           <img
             src={content.hero_image}
             alt="Studio Inai architecture"
             className="w-full h-full object-cover"
+            loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-900/70 via-stone-900/20 to-stone-900/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-900/30 to-stone-900/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-stone-950/40 via-transparent to-transparent" />
         </div>
         <div className="relative max-w-7xl mx-auto px-6 md:px-12 pb-20 md:pb-28 pt-32 w-full">
-          <div className="overline text-stone-200 reveal reveal-1" data-testid="hero-overline">{content.hero_overline}</div>
+          <div className="overline text-amber-100/90 reveal reveal-1" data-testid="hero-overline">{content.hero_overline}</div>
           <h1
             className="editorial-h1 text-stone-50 text-5xl sm:text-6xl md:text-8xl mt-6 max-w-5xl reveal reveal-2"
             data-testid="hero-title"
           >
             {content.hero_title}
           </h1>
-          <div className="mt-8 flex flex-col md:flex-row md:items-center gap-6 reveal reveal-3">
-            <div className="overline text-stone-300" data-testid="hero-subtitle">
+          <div className="mt-10 flex flex-col md:flex-row md:items-center gap-6 reveal reveal-3">
+            <div className="overline text-stone-200" data-testid="hero-subtitle">
               {content.hero_subtitle}
             </div>
             <Link
               to="/schedule"
               data-testid="hero-cta-book"
-              className="inline-flex items-center gap-2 font-display text-sm tracking-wide px-7 py-3.5 bg-stone-50 text-stone-900 hover:bg-stone-900 hover:text-stone-50 border border-stone-50 transition-all duration-500"
+              className="inline-flex items-center gap-2 font-display text-sm tracking-wide px-7 py-3.5 bg-stone-50 text-stone-900 hover:bg-amber-50 border border-stone-50 transition-all duration-500"
             >
               {content.hero_cta_label}
               <ArrowUpRight size={16} />
