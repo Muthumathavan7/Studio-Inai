@@ -40,8 +40,8 @@ export default function Navbar() {
       data-testid="site-navbar"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
-        <Link to="/" data-testid="nav-logo-link">
-          <Logo dark={useDark} />
+        <Link to="/" data-testid="nav-logo-link" className="-my-2">
+          <Logo dark={useDark} size="lg" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
