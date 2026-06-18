@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import api from "@/lib/api";
+import api, { resolveImageUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { Plus, Trash2, Edit3, X } from "lucide-react";
+import ImageUploader from "@/components/ImageUploader";
 
 const EMPTY = { name: "", title: "", bio: "", image: "", order: 0 };
 
@@ -41,7 +42,7 @@ export default function AdminTeam() {
         {list.map((m, i) => (
           <div key={m.id} className="bg-white border border-stone-200 p-5 flex gap-5" data-testid={`team-row-${i}`}>
             <div className="w-28 h-32 bg-stone-200 shrink-0">
-              {m.image && <img src={m.image} alt={m.name} className="w-full h-full object-cover" />}
+              {m.image && <img src={resolveImageUrl(m.image)} alt={m.name} className="w-full h-full object-cover" />}
             </div>
             <div className="flex-1">
               <div className="overline text-stone-500">{m.title}</div>
@@ -66,7 +67,12 @@ export default function AdminTeam() {
             <div className="space-y-4">
               <Input label="Name" value={editing.name} onChange={(v) => setEditing({...editing, name: v})} testid="tm-name" />
               <Input label="Title / Role" value={editing.title} onChange={(v) => setEditing({...editing, title: v})} testid="tm-title" />
-              <Input label="Image URL" value={editing.image} onChange={(v) => setEditing({...editing, image: v})} testid="tm-image" />
+              <ImageUploader
+                label="Photo"
+                value={editing.image}
+                onChange={(v) => setEditing({...editing, image: v})}
+                testid="tm-image-uploader"
+              />
               <div>
                 <label className="overline text-stone-500">Bio</label>
                 <textarea rows={5} value={editing.bio} onChange={(e) => setEditing({...editing, bio: e.target.value})} data-testid="tm-bio" className="mt-2 w-full border border-stone-200 px-3 py-2 text-sm resize-none" />

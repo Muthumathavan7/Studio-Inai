@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import api from "@/lib/api";
+import api, { resolveImageUrl } from "@/lib/api";
 import { X } from "lucide-react";
 
 export default function Portfolio() {
@@ -62,7 +62,7 @@ export default function Portfolio() {
                 className="text-left group"
               >
                 <div className="img-zoom aspect-[4/5] bg-stone-200">
-                  <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" />
+                  <img src={resolveImageUrl(p.cover_image)} alt={p.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="mt-4 flex items-baseline justify-between">
                   <div>
@@ -100,7 +100,7 @@ export default function Portfolio() {
                 </button>
               </div>
               <div className="aspect-[16/9] bg-stone-200">
-                <img src={active.cover_image} alt={active.title} className="w-full h-full object-cover" />
+                <img src={resolveImageUrl(active.cover_image)} alt={active.title} className="w-full h-full object-cover" />
               </div>
               <div className="p-8 md:p-12">
                 <div className="overline text-stone-500">{active.category}</div>
@@ -116,7 +116,7 @@ export default function Portfolio() {
                   <div className="grid md:grid-cols-2 gap-4 mt-10">
                     {active.images.map((src, i) => (
                       <div key={i} className="aspect-[4/3] bg-stone-200">
-                        <img src={src} alt={`${active.title} ${i}`} className="w-full h-full object-cover" />
+                        <img src={resolveImageUrl(src)} alt={`${active.title} ${i}`} className="w-full h-full object-cover" />
                       </div>
                     ))}
                   </div>

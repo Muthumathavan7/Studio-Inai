@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "@/lib/api";
+import api, { resolveImageUrl } from "@/lib/api";
 
 export default function About() {
   const [content, setContent] = useState(null);
@@ -29,7 +29,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid md:grid-cols-12 gap-12 md:gap-16">
           <div className="md:col-span-6">
             <div className="img-zoom aspect-[4/5] bg-stone-200">
-              <img src={content.about_image} alt="Studio Inai" className="w-full h-full object-cover" />
+              <img src={resolveImageUrl(content.about_image)} alt="Studio Inai" className="w-full h-full object-cover" />
             </div>
           </div>
           <div className="md:col-span-6 flex flex-col justify-center">
@@ -68,7 +68,7 @@ export default function About() {
               <div key={m.id} data-testid={`team-${i}`} className="grid grid-cols-12 gap-6">
                 <div className="col-span-5">
                   <div className="img-zoom aspect-[3/4] bg-stone-300">
-                    {m.image && <img src={m.image} alt={m.name} className="w-full h-full object-cover" />}
+                    {m.image && <img src={resolveImageUrl(m.image)} alt={m.name} className="w-full h-full object-cover" />}
                   </div>
                 </div>
                 <div className="col-span-7 flex flex-col justify-between">

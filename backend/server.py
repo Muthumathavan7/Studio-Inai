@@ -8,7 +8,7 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from fastapi import FastAPI, APIRouter, HTTPException, Depends
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, Response
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -27,6 +27,7 @@ from models import (
     Availability, AvailabilityUpdate,
 )
 from seed import seed_all
+from storage import init_storage, put_object, get_object, make_upload_path
 
 
 # ===== DB =====
@@ -354,12 +355,71 @@ async def admin_stats(admin=Depends(get_current_admin)):
     }
 
 
+# ===== FILE UPLOADS =====
+MAX_UPLOAD_BYTES = 12 * 1024 * 1024  # 12 MB
+
+
+@api.post("/admin/uploads")
+async def upload_file(file: UploadFile = File(...), admin=Depends(get_current_admin)):
+    if not file.filename:
+        raise HTTPException(400, "Filename required")
+    data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, "File too large (max 12MB)")
+    storage_path, ext, default_ct = make_upload_path(file.filename)
+    content_type = file.content_type or default_ct
+    if not content_type.startswith("image/"):
+        raise HTTPException(400, "Only images are allowed")
+    try:
+        result = put_object(storage_path, data, content_type)
+    except Exception as e:
+        logger.exception("Upload failed")
+        raise HTTPException(500, f"Upload failed: {e}")
+
+    file_id = str(__import__("uuid").uuid4())
+    backend_url = os.environ.get("PUBLIC_API_BASE", "")
+    # public URL via /api/files/{id}
+    public_url = f"/api/files/{file_id}"
+    record = {
+        "_id": file_id,
+        "storage_path": result["path"],
+        "original_filename": file.filename,
+        "content_type": content_type,
+        "size": result.get("size", len(data)),
+        "is_deleted": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.files.insert_one(record)
+    return {"id": file_id, "url": public_url, "filename": file.filename, "size": record["size"]}
+
+
+@api.get("/files/{file_id}")
+async def serve_file(file_id: str):
+    rec = await db.files.find_one({"_id": file_id, "is_deleted": False})
+    if not rec:
+        raise HTTPException(404, "File not found")
+    try:
+        data, ct = get_object(rec["storage_path"])
+    except Exception as e:
+        logger.exception("Serve file failed")
+        raise HTTPException(500, "Could not load file")
+    return Response(
+        content=data,
+        media_type=rec.get("content_type", ct),
+        headers={"Cache-Control": "public, max-age=31536000, immutable"},
+    )
+
+
 # ===== STARTUP =====
 @app.on_event("startup")
 async def on_startup():
     await db.users.create_index("email", unique=True)
     await db.bookings.create_index([("date", 1), ("time", 1)])
     await seed_all(db)
+    try:
+        init_storage()
+    except Exception as e:
+        logger.warning(f"Storage init at startup failed: {e}")
     logger.info("Studio Inai API started; seed complete.")
 
 

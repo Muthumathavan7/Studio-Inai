@@ -1,7 +1,7 @@
 import React from "react";
 
 const LOGO_URL =
-  "https://customer-assets.emergentagent.com/job_architect-pro-10/artifacts/8iptcf6v_Screenshot%202026-06-17%20at%206.27.40%E2%80%AFPM.png";
+  "https://customer-assets.emergentagent.com/job_architect-pro-10/artifacts/91s3fe3b_LOGO%20-%20CAD%20Vector%20Model.png";
 
 export const Logo = ({ className = "", dark = false, size = "md" }) => {
   const sizes = {

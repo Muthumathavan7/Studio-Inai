@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import api from "@/lib/api";
+import api, { resolveImageUrl } from "@/lib/api";
 
 export default function Home() {
   const [content, setContent] = useState(null);
@@ -22,7 +22,7 @@ export default function Home() {
       <section className="relative min-h-[100vh] flex items-end overflow-hidden bg-stone-900" data-testid="hero-section">
         <div className="absolute inset-0">
           <img
-            src={content.hero_image}
+            src={resolveImageUrl(content.hero_image)}
             alt="Studio Inai architecture"
             className="w-full h-full object-cover"
             loading="eager"
@@ -129,7 +129,7 @@ export default function Home() {
               >
                 <div className="img-zoom aspect-[4/5] bg-stone-200">
                   <img
-                    src={p.cover_image}
+                    src={resolveImageUrl(p.cover_image)}
                     alt={p.title}
                     className="w-full h-full object-cover"
                   />

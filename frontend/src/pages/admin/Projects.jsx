@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import api from "@/lib/api";
+import api, { resolveImageUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { Plus, Trash2, Edit3, X } from "lucide-react";
+import ImageUploader from "@/components/ImageUploader";
 
 const CATEGORIES = ["Residential", "Commercial", "Institutional", "Interior", "Urban"];
 
@@ -64,7 +65,7 @@ export default function AdminProjects() {
         {list.map((p, i) => (
           <div key={p.id} className="bg-white border border-stone-200" data-testid={`project-row-${i}`}>
             <div className="aspect-[4/3] bg-stone-200">
-              {p.cover_image && <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" />}
+              {p.cover_image && <img src={resolveImageUrl(p.cover_image)} alt={p.title} className="w-full h-full object-cover" />}
             </div>
             <div className="p-4">
               <div className="overline text-stone-500">{p.category}</div>
@@ -106,7 +107,12 @@ export default function AdminProjects() {
               <Input label="Location" value={editing.location} onChange={(v) => setEditing({ ...editing, location: v })} testid="proj-location" />
               <Input label="Year" value={editing.year} onChange={(v) => setEditing({ ...editing, year: v })} testid="proj-year" />
               <div className="md:col-span-2">
-                <Input label="Cover image URL" value={editing.cover_image} onChange={(v) => setEditing({ ...editing, cover_image: v })} testid="proj-cover" />
+                <ImageUploader
+                  label="Cover image"
+                  value={editing.cover_image}
+                  onChange={(v) => setEditing({ ...editing, cover_image: v })}
+                  testid="proj-cover-uploader"
+                />
               </div>
               <div className="md:col-span-2">
                 <label className="overline text-stone-500">Description</label>
@@ -119,11 +125,12 @@ export default function AdminProjects() {
                 />
               </div>
               <div className="md:col-span-2">
-                <Input
-                  label="Gallery image URLs (comma separated)"
-                  value={editing.images.join(", ")}
-                  onChange={(v) => setEditing({ ...editing, images: v.split(",").map((s) => s.trim()).filter(Boolean) })}
-                  testid="proj-gallery"
+                <ImageUploader
+                  label="Gallery images"
+                  multiple
+                  value={editing.images}
+                  onChange={(v) => setEditing({ ...editing, images: v })}
+                  testid="proj-gallery-uploader"
                 />
               </div>
               <Input label="Order" type="number" value={editing.order} onChange={(v) => setEditing({ ...editing, order: parseInt(v) || 0 })} testid="proj-order" />
