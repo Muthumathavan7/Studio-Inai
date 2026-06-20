@@ -399,7 +399,7 @@ async def serve_file(file_id: str):
     if not rec:
         raise HTTPException(404, "File not found")
     try:
-        data, ct = get_object(rec["storage_path"])
+        data, ct = get_object(rec["storage_path"], file_id=file_id)
     except Exception as e:
         logger.exception("Serve file failed")
         raise HTTPException(500, "Could not load file")
