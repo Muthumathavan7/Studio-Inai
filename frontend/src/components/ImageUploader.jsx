@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import api from "@/lib/api";
+import { compressImage } from "@/lib/imageCompress";
 import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -26,12 +27,21 @@ export default function ImageUploader({ value, onChange, label = "Image", multip
   const [uploading, setUploading] = useState(false);
 
   const uploadOne = async (file) => {
+    // Client-side resize/compress so big phone photos don't hit ingress body-size limits.
+    const optimized = await compressImage(file);
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("file", optimized);
     const res = await api.post("/admin/uploads", fd, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return res.data.url;
+  };
+
+  const errorMessageOf = (err, fallback) => {
+    const detail = err?.response?.data?.detail;
+    if (typeof detail === "string") return detail;
+    if (err?.message) return err.message;
+    return fallback;
   };
 
   const handleFiles = async (files) => {
@@ -48,7 +58,7 @@ export default function ImageUploader({ value, onChange, label = "Image", multip
           const u = await uploadOne(f);
           urls.push(u);
         } catch (e) {
-          toast.error(`Upload failed: ${f.name}`);
+          toast.error(errorMessageOf(e, `Upload failed: ${f.name}`));
         }
       }
       if (urls.length === 0) return;
@@ -127,7 +137,7 @@ export default function ImageUploader({ value, onChange, label = "Image", multip
             <div className="mt-2 text-sm text-stone-700 font-display">
               {multiple ? "Drag images here or click to upload" : "Drag an image here or click to upload"}
             </div>
-            <div className="text-xs text-stone-500 mt-1">JPG · PNG · WEBP · up to 12MB each</div>
+            <div className="text-xs text-stone-500 mt-1">JPG · PNG · WEBP — auto-resized for the web</div>
           </>
         )}
         <input

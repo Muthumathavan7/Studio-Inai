@@ -356,7 +356,7 @@ async def admin_stats(admin=Depends(get_current_admin)):
 
 
 # ===== FILE UPLOADS =====
-MAX_UPLOAD_BYTES = 12 * 1024 * 1024  # 12 MB
+MAX_UPLOAD_BYTES = 25 * 1024 * 1024  # 25 MB safety ceiling (frontend compresses to <2MB typically)
 
 
 @api.post("/admin/uploads")
@@ -365,7 +365,7 @@ async def upload_file(file: UploadFile = File(...), admin=Depends(get_current_ad
         raise HTTPException(400, "Filename required")
     data = await file.read()
     if len(data) > MAX_UPLOAD_BYTES:
-        raise HTTPException(413, "File too large (max 12MB)")
+        raise HTTPException(413, "File too large (max 25MB after server-side check)")
     storage_path, ext, default_ct = make_upload_path(file.filename)
     content_type = file.content_type or default_ct
     if not content_type.startswith("image/"):
